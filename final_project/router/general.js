@@ -6,37 +6,52 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    //Write your code here
+    return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    res.send(JSON.stringify(books,null,4))
+    return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const isbn = req.params.isbn;
+    res.send(books[isbn]) 
+    return res.status(300).json({message: "Yet to be implemented"});
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const bookAuthor = Object.entries(books).filter(book => book.some(book => book.author === req.params.author));
+    if (bookAuthor.length !== 0) {
+        const bookAuthorObject = Object.fromEntries(bookAuthor)
+        res.send(bookAuthorObject)
+    } else {
+        res.send("Unable to find the author! Check if the author name is properly spelled")
+    }
+    return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const bookTitle = Object.entries(books).filter(book => book.some(book => book.title === req.params.title));
+    if (bookTitle !== 0) {
+        const bookTitleObject = Object.fromEntries(bookTitle);
+        res.send(bookTitleObject)
+    } else {
+        res.send("Unable to find the title! Check if the title is properly spelled")
+    }
+    return res.status(300).json({message: "Yet to be implemented"});
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
+  const isbn = req.params.isbn;
+  const review = books[isbn].reviews;
+  res.send(review)
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
