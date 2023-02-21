@@ -2,7 +2,9 @@ const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+let prompt = require('prompt-sync')();
 const public_users = express.Router();
+
 
 // Register user access
 public_users.post("/register", (req,res) => {
@@ -22,7 +24,7 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-    return res.status(200).json(JSON.stringify(books,null,4))
+    return res.send(JSON.stringify(books,null,4))
 });
 
 // Get book details based on ISBN
@@ -65,3 +67,54 @@ public_users.get('/review/:isbn',function (req, res) {
 });
 
 module.exports.general = public_users;
+
+// Task 10
+let bookList = new Promise(resolve => {
+    resolve(books)
+});
+bookList.then(result => console.log(result));
+
+// Task 11
+let bookISBN = new Promise((resolve,reject) => {
+    const isbn = prompt('Introduce the ISBN?');
+    const book = books[isbn];
+    if (book) {
+        resolve(books[isbn])
+    }
+    reject("Invalid ISBN");
+})
+
+bookISBN.then(
+    result => console.log(result),
+    err => console.log(err)
+)
+
+// Task 12
+let bookAuthor = new Promise((resolve,reject) => {
+    var author = prompt('Introduce the Author?');
+    const book = Object.entries(books).filter(book => book.some(book => book.author === author));
+    if (Object.keys(book).length > 0) {
+        resolve(Object.fromEntries(book))
+    }
+    reject("Invalid Author");
+})
+
+bookAuthor.then(
+    result => console.log(result),
+    err => console.log(err)
+)
+
+// Task 13
+let bookTitle = new Promise((resolve,reject) => {
+    var title = prompt('Introduce the Title?');
+    const book = Object.entries(books).filter(book => book.some(book => book.title === title));
+    if (Object.keys(book).length > 0) {
+        resolve(Object.fromEntries(book))
+    }
+    reject("Invalid Title");
+})
+
+bookTitle.then(
+    result => console.log(result),
+    err => console.log(err)
+)
